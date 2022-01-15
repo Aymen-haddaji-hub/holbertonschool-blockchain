@@ -1,32 +1,41 @@
 #include "hblk_crypto.h"
 
 /**
- * ec_load - a function that loads an EC key from a file.
- * @folder: path to folder
- * Return: pointer to EC key on success, NULL on error.
+ * ec_load - loads an EC key pair from the disk.
+ * @folder: path to the folder in which to save the keys
+ * Return: pointer to the loaded EC key, NULL on error
  */
 EC_KEY *ec_load(char const *folder)
 {
 	FILE *fp;
 	char path[256] = {0};
-	EC_KEY *key;
+	EC_KEY *key = NULL;
 
 	if (!folder)
-		return (NULL);
-	sprintf(path, "%s/%s", folder, PUB_FILENAME);
+		return (0);
+	sprintf(path, "%s/" PUB_FILENAME, folder);
 	fp = fopen(path, "r");
 	if (!fp)
-		return (NULL);
+	{
+		EC_KEY_free(key);
+		return (0);
+	}
 	if (!PEM_read_EC_PUBKEY(fp, &key, NULL, NULL))
-		return (NULL);
+	{
+		EC_KEY_free(key);
+		fclose(fp);
+		return (0);
+	}
 	fclose(fp);
-
-	sprintf(path, "%s/%s", folder, PRI_FILENAME);
+	sprintf(path, "%s/" PRI_FILENAME, folder);
 	fp = fopen(path, "r");
 	if (!fp)
-		return (NULL);
+		return (0);
 	if (!PEM_read_ECPrivateKey(fp, &key, NULL, NULL))
-		return (NULL);
+	{
+		fclose(fp);
+		return (0);
+	}
 	fclose(fp);
 	return (key);
 }
