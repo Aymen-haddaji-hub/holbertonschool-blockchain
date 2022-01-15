@@ -13,23 +13,20 @@ EC_KEY *ec_load(char const *folder)
 
 	if (!folder)
 		return (NULL);
-	sprintf(path, "%s/%s", folder, PRI_FILENAME);
-	fp = fopen(path, "r");
-	if (!fp)
-		return (NULL);
-	key = PEM_read_ECPrivateKey(fp, NULL, NULL, NULL);
-	fclose(fp);
-	if (!key)
-		return (NULL);
 	sprintf(path, "%s/%s", folder, PUB_FILENAME);
 	fp = fopen(path, "r");
 	if (!fp)
 		return (NULL);
 	if (!PEM_read_EC_PUBKEY(fp, &key, NULL, NULL))
-	{
-		EC_KEY_free(key);
 		return (NULL);
-	}
+	fclose(fp);
+
+	sprintf(path, "%s/%s", folder, PRI_FILENAME);
+	fp = fopen(path, "r");
+	if (!fp)
+		return (NULL);
+	if (!PEM_read_ECPrivateKey(fp, &key, NULL, NULL))
+		return (NULL);
 	fclose(fp);
 	return (key);
 }
