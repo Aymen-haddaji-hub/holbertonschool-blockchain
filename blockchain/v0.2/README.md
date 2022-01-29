@@ -1,6 +1,6 @@
-#Blockchain - Block mining
+# Blockchain - Block mining
 
-##General
+## General
 * What is the purpose of the Block difficulty
 * What is the Proof of Work
 * How to check that a given hash matches a given difficulty
