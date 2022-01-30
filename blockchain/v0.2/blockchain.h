@@ -94,7 +94,7 @@ typedef struct header_s
 	int32_t hblk_blocks;
 } header_t;
 
-#define GENESIS { \
+#define GEN_BLOCK { \
 		{ /* info */	    \
 			0 /* index */,				\
 				0, /* difficulty */		\
