@@ -25,8 +25,9 @@ uint8_t *create_tx_data_buffer(
 	if (*output_count == -1)
 		return (NULL);
 	*tx_io_buf_size = ((SHA256_DIGEST_LENGTH * 3) * *input_count) +
-					  ((SHA256_DIGEST_LENGTH * 3) * *output_count);
-	tx_data_buf = calloc(*tx_io_buf_size, sizeof(uint8_t));
+		(SHA256_DIGEST_LENGTH * *output_count);
+
+	tx_data_buf = malloc(*tx_io_buf_size);
 	if (!tx_data_buf)
 		return (NULL);
 	return (tx_data_buf);
