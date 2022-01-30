@@ -55,7 +55,7 @@ int fill_tx_data_buffer(
 		return (1);
 	for (i = 0, tx_data_buf = tx_io_buf; i < input_count; i++)
 	{
-		tx_in = (tx_in_t *)llist_get_node_at(tx->inputs, i);
+		tx_in = (tx_in_t *)llist_get_node_at(tx->inputs, (unsigned int)i);
 		if (!tx_in)
 			return (1);
 		memcpy(tx_data_buf, tx_in, (SHA256_DIGEST_LENGTH * 3));
