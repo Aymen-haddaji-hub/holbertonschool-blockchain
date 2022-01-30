@@ -7,7 +7,7 @@
  * Return:  A pointer to a newly allocated `tx_out_t`
  *         or `NULL` on error
  */
-tx_out_t *tx_out_create(uint32_t amount, uint8_t *pub[EC_PUB_LEN])
+tx_out_t *tx_out_create(uint32_t amount, uint8_t const pub[EC_PUB_LEN])
 {
 	tx_out_t *tx_out;
 
