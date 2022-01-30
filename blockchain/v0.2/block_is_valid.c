@@ -13,27 +13,26 @@
  */
 int block_is_valid(block_t const *block, block_t const *prev_block)
 {
-	uint8_t const *p;
-	uint32_t i;
+	block_t const tmp = GEN_BLOCK;
+	uint8_t hash[SHA256_DIGEST_LENGTH] = {0};
 
-	if (!block)
-		return (-1);
-
-	if (prev_block && block->info.prev_hash != prev_block->hash)
-		return (-1);
-
-	if (block->info.nonce == 0)
-		return (-1);
-
-	if (block->info.difficulty % 8)
-		if ((block->hash[block->info.difficulty / 8] &
-			(0xFF << (8 - block->info.difficulty % 8))) != 0)
-			return (-1);
-
-	p = block->hash;
-	for (i = 0; i < block->info.difficulty / 8; i++)
-		if (*p++ != 0x00)
-			return (-1);
-
+	if (!block || (!prev_block && block->info.index != 0))
+		return (1);
+	if (!hash_matches_difficulty(block->hash, block->info.difficulty))
+		return (1);
+	if (block->info.index == 0)
+		return (memcmp(block, &tmp, sizeof(tmp)));
+	if (block->info.index != prev_block->info.index + 1)
+		return (1);
+	if (!block_hash(prev_block, hash) ||
+		memcmp(hash, prev_block->hash, SHA256_DIGEST_LENGTH))
+		return (1);
+	if (memcmp(prev_block->hash, block->info.prev_hash, SHA256_DIGEST_LENGTH))
+		return (1);
+	if (!block_hash(block, hash) ||
+		memcmp(hash, block->hash, SHA256_DIGEST_LENGTH))
+		return (1);
+	if (block->data.len > BLOCKCHAIN_DATA_MAX)
+		return (1);
 	return (0);
 }
