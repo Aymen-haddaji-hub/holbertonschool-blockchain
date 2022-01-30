@@ -81,34 +81,26 @@ uint8_t *transaction_hash(
 	transaction_t const *transaction,
 	uint8_t hash_buf[SHA256_DIGEST_LENGTH])
 {
-	uint8_t *tx_data_buf;
-	size_t tx_io_buf_size;
 	int input_count;
 	int output_count;
+	size_t tx_io_buf_size;
+	uint8_t *tx_data_buf;
 
 	if (!transaction || !hash_buf)
 		return (NULL);
-	tx_data_buf = create_tx_data_buffer(transaction,
-					&input_count,
-					&output_count,
-					&tx_io_buf_size);
+	tx_data_buf = create_tx_data_buffer(
+		transaction,
+		&input_count,
+		&output_count,
+		&tx_io_buf_size);
 	if (!tx_data_buf)
 		return (NULL);
-	if (fill_tx_data_buffer(transaction,
-					input_count,
-					output_count,
-					tx_data_buf) != 0)
+	if (fill_tx_data_buffer(transaction, input_count, output_count, tx_data_buf))
 	{
 		free(tx_data_buf);
 		return (NULL);
 	}
-	if (!sha256((const int8_t *)tx_data_buf,
-				tx_io_buf_size,
-				hash_buf))
-	{
-		free(tx_data_buf);
-		return (NULL);
-	}
+	sha256((const int8_t *)tx_data_buf, tx_io_buf_size, hash_buf);
 	free(tx_data_buf);
 	return (hash_buf);
 }
