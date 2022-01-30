@@ -26,7 +26,7 @@ sig_t *tx_in_sign(tx_in_t *in,
 		unspent = NULL;
 	}
 	if (!unspent || !ec_to_pub(sender, pub) ||
-		!memcmp(pub, unspent->out.pub, EC_PUB_LEN))
+		memcmp(pub, unspent->out.pub, EC_PUB_LEN))
 		return (NULL);
 	if (!ec_sign(sender, tx_id, SHA256_DIGEST_LENGTH, &(in->sig)))
 		return (NULL);
