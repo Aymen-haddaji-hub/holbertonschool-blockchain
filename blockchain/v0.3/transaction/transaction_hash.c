@@ -85,19 +85,19 @@ uint8_t *transaction_hash(
 	size_t tx_io_buf_size;
 	int input_count;
 	int output_count;
-	
+
 	if (!transaction || !hash_buf)
 		return (NULL);
 	tx_data_buf = create_tx_data_buffer(transaction,
-										&input_count,
-										&output_count,
-										&tx_io_buf_size);
+					&input_count,
+					&output_count,
+					&tx_io_buf_size);
 	if (!tx_data_buf)
 		return (NULL);
 	if (fill_tx_data_buffer(transaction,
-							input_count,
-							output_count,
-							tx_data_buf) != 0)
+					input_count,
+					output_count,
+					tx_data_buf) != 0)
 	{
 		free(tx_data_buf);
 		return (NULL);
