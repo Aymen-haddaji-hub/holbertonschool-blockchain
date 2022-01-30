@@ -26,7 +26,7 @@ uint8_t *create_tx_data_buffer(
 		return (NULL);
 	*tx_io_buf_size = ((SHA256_DIGEST_LENGTH * 3) * *input_count) +
 					  ((SHA256_DIGEST_LENGTH * 3) * *output_count);
-	tx_data_buf = malloc(*tx_io_buf_size);
+	tx_data_buf = calloc(*tx_io_buf_size, sizeof(uint8_t));
 	if (!tx_data_buf)
 		return (NULL);
 	return (tx_data_buf);
@@ -81,25 +81,34 @@ uint8_t *transaction_hash(
 	transaction_t const *transaction,
 	uint8_t hash_buf[SHA256_DIGEST_LENGTH])
 {
+	uint8_t *tx_data_buf;
+	size_t tx_io_buf_size;
 	int input_count;
 	int output_count;
-	size_t tx_io_buf_size;
-	uint8_t *tx_data_buf;
-	uint8_t *tx_io_buf;
-
+	
 	if (!transaction || !hash_buf)
 		return (NULL);
-	tx_data_buf = create_tx_data_buffer(
-		transaction, &input_count, &output_count, &tx_io_buf_size);
+	tx_data_buf = create_tx_data_buffer(transaction,
+										&input_count,
+										&output_count,
+										&tx_io_buf_size);
 	if (!tx_data_buf)
 		return (NULL);
-	tx_io_buf = malloc(tx_io_buf_size);
-	if (!tx_io_buf)
+	if (fill_tx_data_buffer(transaction,
+							input_count,
+							output_count,
+							tx_data_buf) != 0)
+	{
+		free(tx_data_buf);
 		return (NULL);
-	if (fill_tx_data_buffer(transaction, input_count, output_count, tx_io_buf))
+	}
+	if (!sha256((const int8_t *)tx_data_buf,
+				tx_io_buf_size,
+				hash_buf))
+	{
+		free(tx_data_buf);
 		return (NULL);
-	sha256((const int8_t *)tx_io_buf, tx_io_buf_size, hash_buf);
-	free(tx_io_buf);
+	}
 	free(tx_data_buf);
 	return (hash_buf);
 }
