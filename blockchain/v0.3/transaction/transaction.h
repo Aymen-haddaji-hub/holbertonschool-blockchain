@@ -3,6 +3,21 @@
 #include "blockchain.h"
 
 /**
+ * struct Collect_sender_unspent - struct for collect sender unspent
+ * @sender_unspent: sender unspent
+ * @sender_pubkey: sender public key
+ * @total_amount: total amount
+ * @amount: amount
+ */
+typedef struct Collect_sender_unspent
+{
+	llist_t *sender_unspent;
+	uint8_t *sender_pubkey;
+	uint64_t total_amount;
+	uint64_t amount;
+} collect_sender_unspent_t;
+
+/**
  * struct transaction_s - Transaction structure
  *
  * @id:      Transaction ID. A hash of all the inputs and outputs.
